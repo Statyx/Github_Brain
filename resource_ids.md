@@ -95,6 +95,25 @@ All Azure and Fabric resource identifiers for the MF_Finance demo.
 
 ---
 
+## RTI Demo Workspace
+
+| Property | Value |
+|----------|-------|
+| Name | `CDR - Fabric RTI Demo` |
+| ID | _TBD — run deploy_workspace.py to populate_ |
+| GitHub | `https://github.com/Statyx/Fabric_RTI_Demo` |
+
+### RTI Demo Items (populated after deployment)
+| Item | Type | ID |
+|------|------|----|
+| EH_SensorTelemetry | Eventhouse | _TBD_ |
+| LH_SensorReference | Lakehouse | _TBD_ |
+| ES_SensorIngestion | EventStream | _TBD_ |
+
+> IDs are saved in `Fabric RTI Demo/src/state.json` after each deployment step.
+
+---
+
 ## API Endpoints
 
 | Service | Base URL | Token Scope |
