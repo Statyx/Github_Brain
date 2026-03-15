@@ -100,17 +100,22 @@ All Azure and Fabric resource identifiers for the MF_Finance demo.
 | Property | Value |
 |----------|-------|
 | Name | `CDR - Fabric RTI Demo` |
-| ID | _TBD — run deploy_workspace.py to populate_ |
+| ID | `a1dce412-7b2d-4406-838d-61c94cad8acf` |
 | GitHub | `https://github.com/Statyx/Fabric_RTI_Demo` |
 
-### RTI Demo Items (populated after deployment)
+### RTI Demo Items
 | Item | Type | ID |
 |------|------|----|
-| EH_SensorTelemetry | Eventhouse | _TBD_ |
-| LH_SensorReference | Lakehouse | _TBD_ |
-| ES_SensorIngestion | EventStream | _TBD_ |
+| EH_SensorTelemetry | Eventhouse | `263ae735-dd73-4235-8716-04ae7abd91ba` |
+| KQL Database | KQLDatabase | `742d0d2a-79d4-42dc-ba39-3759848cb817` |
+| LH_SensorReference | Lakehouse | `f0e7f54e-ee39-4232-9e0e-361a6b58ff82` |
+| ES_SensorIngestion | EventStream | `3036772d-e021-4f48-baa0-cd7fa4bcbd6a` |
 
-> IDs are saved in `Fabric RTI Demo/src/state.json` after each deployment step.
+| Property | Value |
+|----------|-------|
+| Query Service URI | `https://trd-qfhrr3s182t03md55n.z9.kusto.fabric.microsoft.com` |
+
+> IDs are also saved in `Fabric RTI Demo/src/state.json` after each deployment step.
 
 ---
 
