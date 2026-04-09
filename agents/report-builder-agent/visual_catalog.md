@@ -466,3 +466,153 @@ def make_card(name, x, y, w, h, table, measure, title, alias="f"):
         "howCreated": "Copilot"
     }
 ```
+
+---
+
+## Additional Visual Types (from PBIX Analysis)
+
+These visual types appear extensively in production reports but are **not data-bound**.
+
+| Visual Type | `visualType` value | prototypeQuery? | Purpose |
+|-------------|-------------------|:---:|--------|
+| Action Button | `actionButton` | NO | Page navigation, drill-through links, bookmark triggers |
+| Basic Shape | `basicShape` | NO | Background panels, colored bars, section separators |
+| Shape | `shape` | NO | Decorative borders, accent lines |
+| Visual Group | `visualGroup` | NO | Group visuals for layered templates, bookmark targets |
+| Pivot Table | `pivotTable` | YES | Alternative table visual with built-in aggregation |
+
+### Action Button Config
+```python
+def make_nav_button(name, x, y, w, h, target_page, label):
+    return {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": 2, "width": w, "height": h}}],
+        "singleVisual": {
+            "visualType": "actionButton",
+            "objects": {
+                "icon": [{"properties": {"show": _lit("false")}}],
+                "outline": [{"properties": {"show": _lit("false")}}],
+                "fill": [{"properties": {"fillColor": _color("#118DFF"), "transparency": _lit("0L")}}],
+                "text": [{"properties": {
+                    "show": _lit("true"),
+                    "text": _lit(f"'{label}'"),
+                    "fontColor": _color("#FFFFFF"),
+                    "fontSize": _lit("10D"),
+                }}],
+            },
+            "vcObjects": {
+                "visualLink": [{
+                    "properties": {
+                        "show": _lit("true"),
+                        "type": _lit("'PageNavigation'"),
+                        "navigationSection": _lit(f"'{target_page}'"),
+                    }
+                }]
+            },
+        },
+    }
+```
+
+### Basic Shape Config
+```python
+def make_background_panel(name, x, y, w, h, color="#F5F5F5"):
+    return {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": 0, "width": w, "height": h}}],
+        "singleVisual": {
+            "visualType": "basicShape",
+            "objects": {
+                "line": [{"properties": {"show": _lit("false")}}],
+                "fill": [{"properties": {
+                    "fillColor": _color(color),
+                    "transparency": _lit("0L"),
+                }}],
+            },
+        },
+    }
+```
+
+---
+
+## Table & Matrix Formatting Objects
+
+> Extracted from 12 pivot tables across 7 production reports.
+
+Tables/matrices support these formatting object groups:
+
+| Object Group | Purpose | Common Properties |
+|-------------|---------|-------------------|
+| `grid` | Cell borders, gridlines | `gridHorizontal`, `gridVertical`, `outlineColor`, `outlineWeight` |
+| `columnHeaders` | Header row styling | `fontColor`, `backColor`, `fontSize`, `bold`, `wordWrap` |
+| `rowHeaders` | Row label styling | `fontColor`, `backColor`, `fontSize`, `bold` |
+| `values` | Data cell styling | `fontColor`, `backColor`, `fontSize`, `urlIcon`, `wordWrap` |
+| `subTotals` | Subtotal row styling | `fontColor`, `backColor`, `fontSize`, `bold` |
+| `columnFormatting` | Per-column width/format | `columnWidth`, `autoSizeColumnWidth` |
+| `columnWidth` | Specific column widths | Individual column pixel widths |
+| `rowTotal` | Grand total row | `fontColor`, `backColor`, `bold` |
+| `columnTotal` | Grand total column | `fontColor`, `backColor`, `bold` |
+
+### Styled Table Example
+```python
+"objects": {
+    "grid": [{"properties": {
+        "gridHorizontal": _lit("true"),
+        "gridVertical": _lit("false"),
+        "outlineColor": _color("#E0E0E0"),
+        "outlineWeight": _lit("1L"),
+    }}],
+    "columnHeaders": [{"properties": {
+        "fontColor": _color("#FFFFFF"),
+        "backColor": _color("#118DFF"),
+        "fontSize": _lit("11D"),
+        "bold": _lit("true"),
+    }}],
+    "values": [{"properties": {
+        "fontColor": _color("#333333"),
+        "fontSize": _lit("10D"),
+        "wordWrap": _lit("true"),
+    }}],
+    "subTotals": [{"properties": {
+        "bold": _lit("true"),
+        "backColor": _color("#F5F5F5"),
+    }}],
+}
+```
+
+---
+
+## Gradient Data Point Styling
+
+Use `FillRule` with `linearGradient2` for conditional color fills on data points (bar segments, table cells, map regions).
+
+```python
+def _gradient_datapoint(alias, measure, min_color, max_color):
+    """Create a gradient fill rule for dataPoint.fill."""
+    return {
+        "properties": {
+            "fill": {
+                "solid": {"color": {"expr": {
+                    "FillRule": {
+                        "Input": {
+                            "Measure": {
+                                "Expression": {"SourceRef": {"Source": alias}},
+                                "Property": measure
+                            }
+                        },
+                        "FillRule": {
+                            "linearGradient2": {
+                                "min": {"color": _lit(f"'{min_color}'")},
+                                "max": {"color": _lit(f"'{max_color}'")},
+                            }
+                        }
+                    }
+                }}}
+            }
+        }
+    }
+
+# Usage in bar chart:
+"objects": {
+    "dataPoint": [_gradient_datapoint("f", "Sales", "#DEEFFF", "#118DFF")]
+}
+```

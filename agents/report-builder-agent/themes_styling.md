@@ -307,22 +307,53 @@ for part in result["definition"]["parts"]:
 
 ---
 
-## Color Palette — Finance Dashboard
+## Color Palette — Fluent 2 (Active)
 
-Recommended colors for finance visuals:
+The current project palette uses the **Fluent 2** theme — Microsoft's modern default, extracted from 7 production PBIX reports. Blue-focused, high-contrast, and designed for screen readability.
 
-| Purpose | Color | Hex |
-|---------|-------|-----|
-| Primary (Revenue) | Blue | `#4472C4` |
-| Secondary (Expenses) | Red | `#ED7D31` |
-| Positive (Profit) | Green | `#70AD47` |
-| Warning (Budget Over) | Orange | `#FFC000` |
-| Negative (Loss) | Dark Red | `#C00000` |
-| Neutral | Gray | `#A5A5A5` |
-| Background | White | `#FFFFFF` |
-| Border | Light Gray | `#E0E0E0` |
-| Shadow | Blue Gray | `#A6ADC6` |
-| Text | Dark Gray | `#333333` |
+### Data Colors (8-series palette)
+
+| # | Name | Hex | Usage |
+|---|------|-----|-------|
+| 1 | **Blue** | `#118DFF` | Primary series, positive indicators |
+| 2 | **Navy** | `#12239E` | Secondary series, dark contrast |
+| 3 | **Orange** | `#E66C37` | Tertiary series, warm accent |
+| 4 | **Purple** | `#6B007B` | Deep accent |
+| 5 | **Pink** | `#E044A7` | Highlight accent |
+| 6 | **Violet** | `#744EC2` | Mid-range accent |
+| 7 | **Gold** | `#D9B300` | Warning, neutral series |
+| 8 | **Red** | `#D64550` | Negative / alert indicators |
+
+### Semantic Colors
+
+| Purpose | Hex | Notes |
+|---------|-----|-------|
+| Good / Positive | `#1AAB40` | Green — distinct from primary blue |
+| Bad / Negative | `#D64554` | Red — high contrast on white |
+| Neutral / Warning | `#D9B300` | Gold — attention without alarm |
+| Maximum | `#118DFF` | Gradient max (blue) |
+| Minimum | `#DEEFFF` | Very light blue (gradient min) |
+
+### Structural Colors
+
+| Element | Hex | Source |
+|---------|-----|--------|
+| Text (primary) | `#252423` | Dark charcoal — Fluent 2 standard |
+| Text (secondary) | `#616161` | Medium gray for labels, subtitles |
+| Borders | `#c7c8ce` | Cool gray — subtle card edges |
+| Shadows | `#cccccc` | Soft gray — no colored shadows |
+| Accent bar | `#118DFF` | Blue header accent |
+| Background panels | `#F6F6F6` | Near-white KPI grouping |
+| Page background | `#FFFFFF` | Pure white canvas |
+| Dividers / separators | `#cccccc` | Same as shadows |
+
+### Design Rationale (from PBIX analysis)
+- **Dark charcoal text** (`#252423`) instead of pure black — softer on the eyes, Fluent 2 standard
+- **Cool gray borders** (`#c7c8ce`) — neutral, doesn't compete with data colors
+- **No colored drop shadows** — subtle gray from PBIX analysis
+- **White background** — clean, professional, lets the blue data colors stand out
+- DIN font for visual titles, Segoe UI Semibold for callouts — matches Fluent 2 text classes
+- Blue + navy + orange + purple provides excellent contrast and is colorblind-friendly
 
 ---
 
@@ -356,3 +387,143 @@ def build_aliases(tables: list[str]) -> tuple[dict, list]:
 | `dim_accounts` | `e` or `d` |
 | `fact_budget` | `g` or `e` |
 | `fact_ar_invoices` | `h` or `f` |
+
+---
+
+## Built-in Theme Reference
+
+> Extracted from 7 production PBIX reports. These themes ship with Power BI.
+
+### Fluent 2 (Modern Standard — Recommended)
+
+The current default Power BI theme. Use as baseline for all new reports.
+
+| Property | Value |
+|----------|-------|
+| `name` | `"Fluent 2"` |
+| Data Colors | `#118DFF`, `#12239E`, `#E66C37`, `#6B007B`, `#E044A7`, `#744EC2`, `#D9B300`, `#D64550` |
+| Background | `#FFFFFF` |
+| Foreground | `#252423` |
+| Table Accent | `#118DFF` |
+| Good | `#1AAB40` |
+| Bad | `#D64554` |
+| Neutral | `#D9B300` |
+| Maximum | `#118DFF` |
+| Minimum | `#DEEFFF` |
+| Center | `#C7E5FF` |
+
+#### Fluent 2 Text Classes
+| Class | Font | Size | Color |
+|-------|------|------|-------|
+| `callout` | Segoe UI Semibold | 21pt | `#252423` |
+| `title` | DIN | 12pt | `#252423` |
+| `header` | Segoe UI Semibold | 12pt | `#252423` |
+| `label` | Segoe UI | 10.5pt | `#616161` |
+
+> **Note**: Fluent 2 uses DIN for visual titles and Segoe UI Semibold for callout values (KPI cards). This matches the patterns seen in the production reports.
+
+### Solar (Warm/Energy Theme)
+
+| Property | Value |
+|----------|-------|
+| Data Colors | `#FFAC00`, `#EE5A00`, `#B44400`, `#8A2400`, `#5C0001`, `#DEBF8C`, `#89620D`, `#FFC961` |
+| Background | `#FFFFFF` |
+| Foreground | `#000000` |
+| Good | `#1AAB40` |
+| Bad | `#D64554` |
+
+Best for: Energy dashboards, warm-toned industry reports.
+
+### NewExecutive (Corporate/Blue)
+
+| Property | Value |
+|----------|-------|
+| Data Colors | `#3257A8`, `#4A97C9`, `#6BC1AF`, `#A6DA72`, `#F4EC3A`, `#ECCD67`, `#E8A55B`, `#DEB6CF` |
+| Background | `#FFFFFF` |
+| Foreground | `#232323` |
+| Good | `#1AAB40` |
+| Bad | `#D64554` |
+
+Best for: Executive/boardroom presentations, corporate finance.
+
+---
+
+## Theme-Relative Color Expressions (ThemeDataColor)
+
+Instead of hardcoding hex colors, reference the active theme's data color palette:
+
+```json
+{"expr": {"ThemeDataColor": {"ColorId": 0, "Percent": 0}}}
+```
+
+| Parameter | Meaning |
+|-----------|----------|
+| `ColorId` | 0-based index into `dataColors[]` array |
+| `Percent` | Lightness adjustment: negative = darker, positive = lighter, 0 = exact |
+
+### Examples
+```python
+def _theme_color(color_id: int, percent: float = 0) -> dict:
+    """Reference a theme data color with optional lightness adjustment."""
+    return {"solid": {"color": {"expr": {"ThemeDataColor": {"ColorId": color_id, "Percent": percent}}}}}
+
+# First theme color (primary)
+_theme_color(0)       # Fluent 2: #118DFF
+# Second color, 20% lighter
+_theme_color(1, 0.2)  # Fluent 2: lighter #12239E
+# Seventh color (warning)
+_theme_color(6)       # Fluent 2: #D9B300
+```
+
+### Advantage Over Hardcoded Colors
+- Report automatically updates if user changes theme
+- Ensures palette consistency across all visuals
+- Use `Percent` to create lighter/darker variants without new hex values
+
+---
+
+## Gradient Fills (Conditional Color)
+
+Used for heat maps, KPI conditional coloring, and data bars. Observed heavily in Regional Sales and Corporate Spend reports.
+
+### linearGradient2 Pattern (Two-Stop Gradient)
+```python
+def _gradient_fill(measure_table: str, measure_name: str, min_color: str, max_color: str, alias: str = "f") -> dict:
+    """Create a 2-stop gradient fill bound to a measure."""
+    return {
+        "FillRule": {
+            "linearGradient2": {
+                "min": {"color": _lit(f"'{min_color}'")},
+                "max": {"color": _lit(f"'{max_color}'")},
+            },
+            "inputValue": {
+                "Measure": {
+                    "Expression": {"SourceRef": {"Source": alias}},
+                    "Property": measure_name
+                }
+            }
+        }
+    }
+```
+
+### Usage in Visual Objects
+```python
+# Heat map on a table column
+"objects": {
+    "values": [{
+        "properties": {
+            "backColor": {
+                "solid": {"color": {"expr": _gradient_fill("fact", "Sales", "#DEEFFF", "#118DFF")}}
+            }
+        }
+    }]
+}
+```
+
+### Common Gradient Palettes
+| Purpose | Min Color | Max Color | Notes |
+|---------|-----------|-----------|-------|
+| Blue intensity | `#DEEFFF` | `#118DFF` | Good default, Fluent 2 aligned |
+| Red alert | `#FDDEDE` | `#D64554` | Highlight high-risk values |
+| Green performance | `#E6F5E6` | `#1AAB40` | Performance metrics |
+| Warm (Solar) | `#FFC961` | `#EE5A00` | Energy/heat displays |

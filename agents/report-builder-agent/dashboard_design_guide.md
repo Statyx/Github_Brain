@@ -153,34 +153,40 @@ Use a consistent type scale based on functional roles:
 
 ## 4. Color System
 
-### Semantic Color Palette (Finance)
+### Active Palette: Fluent 2 (Modern Standard)
+
+> Microsoft's current default Power BI theme, validated against 7 production PBIX reports. See `themes_styling.md` for the full reference.
 
 | Role | Color | Hex | Usage |
 |------|-------|-----|-------|
-| Primary | Blue | `#4472C4` | Revenue, primary series |
-| Secondary | Orange | `#ED7D31` | Expenses, secondary series |
-| Positive | Green | `#70AD47` | Profit, favorable variance |
-| Warning | Amber | `#FFC000` | Budget caution, approaching limit |
-| Negative | Red | `#C00000` | Loss, unfavorable variance |
-| Neutral | Gray | `#A5A5A5` | Prior year, benchmark |
+| Primary | Blue | `#118DFF` | Primary series, positive indicators |
+| Secondary | Navy | `#12239E` | Dark contrast, secondary series |
+| Tertiary | Orange | `#E66C37` | Warm accent |
+| Negative | Red | `#D64550` | Loss, alerts, unfavorable variance |
+| Warning | Gold | `#D9B300` | Budget caution, approaching limit |
+| Accent 1 | Pink | `#E044A7` | Highlight accent |
+| Accent 2 | Violet | `#744EC2` | Mid-range accent |
+| Accent 3 | Purple | `#6B007B` | Deep accent |
 
 ### Structural Colors
 
 | Element | Color | Hex |
 |---------|-------|-----|
-| Page background | Near-white | `#F5F5F5` or `#FFFFFF` |
+| Page background | White | `#FFFFFF` |
 | Card background | White | `#FFFFFF` |
-| Primary text | Dark gray | `#333333` |
-| Secondary text | Medium gray | `#666666` |
-| Border | Light gray | `#E0E0E0` |
-| Shadow | Blue-gray | `#A6ADC6` |
-| Divider lines | Extra-light gray | `#D9D9D9` |
+| Primary text | Dark charcoal | `#252423` |
+| Secondary text | Medium gray | `#616161` |
+| Border | Cool gray | `#c7c8ce` |
+| Shadow | Soft gray | `#cccccc` |
+| Divider lines | Soft gray | `#cccccc` |
+| KPI panel background | Near-white | `#F6F6F6` |
+| Accent bar | Blue | `#118DFF` |
 
 ### Color Rules
 1. **Maximum 6 colors** in any single chart — beyond 6, use "Other" bucket
-2. **Consistent meaning** — Blue always = Revenue across all pages
+2. **Consistent meaning** — Teal always = primary positive across all pages
 3. **Sufficient contrast** — WCAG AA minimum (4.5:1 for text, 3:1 for graphics)
-4. **No pure black text** — Use `#333333` (softer on eyes, still high contrast)
+4. **Dark charcoal text** (`#252423`) for readability — Fluent 2 standard, softer than pure black
 5. **Color is not the only indicator** — Pair with icons, labels, or patterns for accessibility
 6. **Avoid red/green only** — ~8% of men have color vision deficiency; add shapes or labels
 
@@ -358,6 +364,54 @@ If using a navigation sidebar (like MF_Finance):
 - [ ] Tab order follows logical reading flow (top-left to bottom-right)
 - [ ] Alt text on images and shapes (if any)
 - [ ] Avoid using only red/green to indicate good/bad
+
+---
+
+## PBIX-Validated Design Patterns
+
+> Evidence from 7 production Power BI reports (35 pages, 1100+ visuals).
+
+### F-Pattern Confirmation
+All 7 reports follow the F-pattern hierarchy:
+- **Top row**: KPI cards or title + slicers (100% of reports)
+- **Middle zone**: Primary charts — bar, line, combo (100% of reports)
+- **Bottom zone**: Tables, matrices, or secondary charts (6/7 reports)
+- Slicers appear **top-right** in all reports that use them
+
+### Visual Density by Report Type
+| Report Style | Pages | Visuals/Page | Bookmarks | Navigation |
+|-------------|-------|-------------|-----------|------------|
+| Executive Summary | 3–4 | 8–15 | 0–5 | Tab strip |
+| Analytical Deep-Dive | 5–11 | 15–30 | 5–18 | Sidebar nav |
+| Data-Dense / Table Focus | 3–5 | 5–10 | 0–2 | Tab strip |
+
+### Decorative Element Usage
+Production reports use **non-data visuals** extensively for visual polish:
+- **basicShape**: Colored background panels behind KPI groups, section dividers, header accent bars
+- **shape**: Thin borders, accent lines, visual separators
+- **actionButton**: Navigation (page links, drill-through), interactive bookmarks
+- **visualGroup**: Layer groups to create reusable page templates and synchronized layouts
+- **image**: Company logos (top-left), category icons
+
+### Bookmark Strategies
+| Pattern | How It Works | Example |
+|---------|-------------|----------|
+| Toggle visibility | Bookmarks show/hide visual groups | Corporate Spend: toggle chart vs table view |
+| Page-level filter | Bookmark applies filters without navigation | Competitive Marketing: filter by segment |
+| Navigation state | Bookmark stores page + filter + scroll | Regional Sales: 18 bookmarks for rapid navigation |
+
+### Navigation Patterns (5+ Page Reports)
+
+**Sidebar navigation** (Regional Sales pattern):
+- 80px-wide colored `basicShape` panel on the left
+- `actionButton` stack (60×50px each, 60px vertical spacing)
+- Action type: `PageNavigation` with `pageLink` → target section name
+- Active state: Contrasting fill color to indicate current page
+
+**Top tab navigation** (Employee Hiring pattern):
+- Row of `actionButton` visuals at y=10, width 120–180px each
+- Horizontal layout across top with 10px gaps
+- Uses bookmark actions to toggle page content groups
 
 ---
 

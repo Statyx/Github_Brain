@@ -20,6 +20,7 @@ All report-related gotchas discovered during this project, with fixes.
 | 10 | Base theme missing = ugly default | LOW | Include CY26SU02.json in StaticResources part |
 | 11 | `updateDefinition` is full replace | MEDIUM | Re-send ALL parts, not just changed ones |
 | 12 | `getDefinition` is always async | MEDIUM | Even for small reports, returns 202 → poll |
+| 13 | All bars same color (single series) | **HIGH** | Add category to `Series` projection — `colorByCategory` alone doesn't work via API |
 
 ---
 
@@ -112,6 +113,25 @@ All report-related gotchas discovered during this project, with fixes.
 
 - **Symptom**: Expecting 200 with body, getting 202 with no body
 - **Fix**: Always poll `x-ms-operation-id` from 202 response headers, then `GET /operations/{id}/result`
+
+### 13. All Bars Same Color (Single Series)
+
+- **Symptom**: Every bar in a clustered bar chart is the same color (first theme color). Same for scatter chart dots.
+- **Cause**: When a bar chart has one measure and one dimension, PBI treats all bars as one series → one color. Setting `"dataPoint": [{"properties": {"colorByCategory": true}}]` in objects does **NOT** work via API deploy.
+- **Fix**: Add the **category column** to the `Series` projection bucket in addition to `Category`. This makes PBI assign a different theme color to each bar:
+  ```python
+  "projections": {
+      "Category": [{"queryRef": f"{dim}.{col}"}],
+      "Y":        [{"queryRef": f"{fact}.{measure}"}],
+      "Series":   [{"queryRef": f"{dim}.{col}"}],  # ← same column as Category
+  }
+  ```
+- Also hide the legend since it duplicates the axis labels:
+  ```python
+  "legend": [{"properties": {"show": {"expr": {"Literal": {"Value": "false"}}}}}]
+  ```
+- **Applies to**: `clusteredBarChart`, `clusteredColumnChart`, `scatterChart`
+- **Does NOT apply to**: `lineChart` (single-series line is normal behavior)
 
 ---
 

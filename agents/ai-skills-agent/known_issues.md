@@ -2,6 +2,19 @@
 
 ---
 
+## Agent Quality Optimization (Learned from 92% validation)
+
+| Issue | Symptom | Fix |
+|-------|---------|-----|
+| **Multi-country queries split into single-country** | Agent filters on first country only, loses second (Q11: France only, no UK). QUERY_ERROR | Add explicit instruction: "Use `IN {"Pays1", "Pays2"}` for multi-country queries. NEVER split into separate queries." Add duplicate fewshot with same pattern |
+| **Agent creates inline DEFINE MEASURE** | Agent writes `DEFINE MEASURE table[M] = MAX(col)` when no permanent measure exists (Q14: Max Estimated Rate EUR). 42+ lines of DAX | Create the measure permanently in the semantic model. Add to build_elements() and Prep for AI annotation |
+| **45-line comparison queries** | Agent writes complex TREATAS + FILTER + VAR chains to compare estimate vs benchmark by discipline (Q25) | Create encapsulated measures (e.g., `[Estimate Delta by Discipline]`) that handle the cross-table logic. Agent then just uses SUMMARIZECOLUMNS with the measure |
+| **"Delta" vs "écart" terminology** | Agent uses "Delta" but test expects "écart". Answer is correct but fails keyword match (Q23: SYNTHESIS) | Add instruction: always use "écart" alongside "Delta" for deviations. Update test expected to accept both: regex `"Delta\|cart"` |
+| **Overly complex DAX (32+ lines)** | Agent uses DEFINE VAR, TREATAS, nested FILTER for simple queries that could be 5 lines (Q9, Q12, Q13) | Add strong fewshot examples showing the simple CALCULATETABLE + SUMMARIZECOLUMNS approach. Add instruction: "Prefer DAX queries < 15 lines" |
+| **BPA-READ-001 repeated across 12 questions** | Agent doesn't consistently use VAR/RETURN for clarity | Instruction already present but buried — move closer to top or reinforce with specific examples in fewshots |
+
+---
+
 ## Data Source Binding
 
 | Issue | Symptom | Workaround |
